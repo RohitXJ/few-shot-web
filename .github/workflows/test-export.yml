@@ -1,6 +1,8 @@
 name: Test Few-Shot Model Export
 
 on:
+  workflow_dispatch:
+    
   push:
     branches: [ main ]
   pull_request:
