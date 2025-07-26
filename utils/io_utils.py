@@ -36,11 +36,14 @@ def get_transform(image_mode):
                                  std=[0.229, 0.224, 0.225])
         ])
             
-def get_img(img_path):
+def get_img(img_path,ret_transform = False):
     image_format = img_check(img_path)
     transform = get_transform(image_format)
     data = datasets.ImageFolder(root=img_path,transform=transform)
-    return data,image_format
+    if ret_transform:
+        return data, image_format,transform
+    else:
+        return data, image_format
 #Test
 #est_path = r"data/query"
 #print(get_img(test_path))

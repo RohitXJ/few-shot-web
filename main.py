@@ -2,7 +2,7 @@ import json
 import os
 import torch
 from torch.utils.data import DataLoader
-from utils import io_utils,fs_utils,model_utils
+from utils import io_utils,fs_utils,model_utils,export
 from testing.test import run_tests
 
 config = {
@@ -15,7 +15,7 @@ config = {
 }
 
 def run_fewshot_pipeline(config):
-    support_data, img_format = io_utils.get_img(img_path=config["support_dir"])
+    support_data, img_format,transforms = io_utils.get_img(img_path=config["support_dir"],ret_transform = True)
     query_data,_ = io_utils.get_img(img_path=config["query_dir"])
 
     encoder = model_utils.get_encoder(backbone_name= config["backbone"],image_format=img_format)
@@ -38,4 +38,26 @@ def run_fewshot_pipeline(config):
     print(f"Accuracy : {accuracy:.2f}%")
     run_tests(prototypes,encoder)
 
+    class_labels = support_data.classes
+
+    config_out = {
+        "labels": class_labels,
+        "label_map": {i: label for i, label in enumerate(class_labels)},
+        "backbone": config["backbone"],
+        "image_format": img_format,
+        "transforms": transforms,  # directly store the transform object
+        "prototypes": prototypes.cpu()
+    }
+    exp_path = export.export_model(config_out)
+    return {
+        "export_path": exp_path,
+        "accuracy": accuracy,
+        "predicted_labels": preds_labels.tolist(),
+        "true_labels": true_labels.tolist(),
+        "labels": class_labels,
+        "n_way": config["n_way"],
+        "k_shot": config["k_shot"]
+    }
+
+#Test
 print(run_fewshot_pipeline(config))
