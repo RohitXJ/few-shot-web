@@ -3,15 +3,11 @@ import os
 import torch
 from torch.utils.data import DataLoader
 from utils import io_utils,fs_utils,model_utils,export
-from testing.test import run_tests
 
 config = {
-    "n_way": 2,
-    "k_shot": 4,
     "support_dir": "data/support/",
     "query_dir": "data/query/",
-    "backbone": "resnet34",
-    "lables": ["PCB","Macbook"]
+    "backbone": "resnet34"
 }
 
 def run_fewshot_pipeline(config):
@@ -33,10 +29,9 @@ def run_fewshot_pipeline(config):
     total = true_labels.size(0)
     accuracy = correct / total * 100
 
-    print("Predicted:", preds_labels.tolist())
-    print("Actual   :", true_labels.tolist())
-    print(f"Accuracy : {accuracy:.2f}%")
-    run_tests(prototypes,encoder)
+    #print("Predicted:", preds_labels.tolist())
+    #print("Actual   :", true_labels.tolist())
+    #print(f"Accuracy : {accuracy:.2f}%")
 
     class_labels = support_data.classes
 
@@ -46,7 +41,8 @@ def run_fewshot_pipeline(config):
         "backbone": config["backbone"],
         "image_format": img_format,
         "transforms": str(transforms),  # directly store the transform object
-        "prototypes": prototypes.cpu()
+        "prototypes": prototypes.cpu(),
+        "labels": class_labels
     }
     exp_path = export.export_model(config_out)
     return {
@@ -54,9 +50,7 @@ def run_fewshot_pipeline(config):
         "accuracy": accuracy,
         "predicted_labels": preds_labels.tolist(),
         "true_labels": true_labels.tolist(),
-        "labels": class_labels,
-        "n_way": config["n_way"],
-        "k_shot": config["k_shot"]
+        "labels": class_labels
     }
 
 #Test
