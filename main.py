@@ -45,7 +45,7 @@ def run_fewshot_pipeline(config):
         "label_map": {i: label for i, label in enumerate(class_labels)},
         "backbone": config["backbone"],
         "image_format": img_format,
-        "transforms": transforms,  # directly store the transform object
+        "transforms": str(transforms),  # directly store the transform object
         "prototypes": prototypes.cpu()
     }
     exp_path = export.export_model(config_out)
