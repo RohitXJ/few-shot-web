@@ -7,7 +7,7 @@ from utils import io_utils,fs_utils,model_utils,export
 config = {
     "support_dir": "data/support/",
     "query_dir": "data/query/",
-    "backbone": "resnet34"
+    "backbone": "densenet121"
 }
 
 def run_fewshot_pipeline(config):
@@ -29,9 +29,9 @@ def run_fewshot_pipeline(config):
     total = true_labels.size(0)
     accuracy = correct / total * 100
 
-    #print("Predicted:", preds_labels.tolist())
-    #print("Actual   :", true_labels.tolist())
-    #print(f"Accuracy : {accuracy:.2f}%")
+    print("Predicted:", preds_labels.tolist())
+    print("Actual   :", true_labels.tolist())
+    print(f"Accuracy : {accuracy:.2f}%")
 
     class_labels = support_data.classes
 
