@@ -181,3 +181,5 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 notes.txt
+data_temp
+export
